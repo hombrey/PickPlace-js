@@ -5,15 +5,43 @@ let bgX;
 let scaleX, scaleY;
 let piece1;
 let pieces;
+let pickedNum=1;
 ;//}}}variable declarations
 
 //{{{event listeners
 window.onload = initWin();
 window.addEventListener("resize", initWin);
-window.addEventListener("keyup", evalKey, false); //capture keypress on bubbling (false) phase
-function evalKey(evnt) {
+window.addEventListener("keyup", evalKeyUp, false); //capture keypress on bubbling (false) phase
+window.addEventListener("keydown", evalKeyDown, false); //capture keypress on bubbling (false) phase
+window.addEventListener("mousedown", movePiece, true); //capture keypress on bubbling (false) phase
+window.addEventListener("mouseup", leavePiece, false); //capture keypress on bubbling (false) phase
+//window.addEventListener("mousemove",followMouse);
+function evalKeyDown(evnt) {
     let keyPressed = evnt.keyCode;
-    console.log ("Pressed: ",keyPressed);
+    if (keyPressed==16) movePiece(); //key: SHIFT -- drag selected piece
+    if (keyPressed==81) selectPiece(1); //key: q
+    if (keyPressed==87) selectPiece(2); //key: w
+    if (keyPressed==69) selectPiece(3); //key: e
+    if (keyPressed==82) selectPiece(4); //key: r
+    if (keyPressed==84) selectPiece(5); //key: t
+    if (keyPressed==89) selectPiece(6); //key: y
+    if (keyPressed==49) placePiece(1); //key: 1
+    if (keyPressed==50) placePiece(2); //key: 2
+    if (keyPressed==51) placePiece(3); //key: 3
+    if (keyPressed==52) placePiece(4); //key: 4
+    if (keyPressed==53) placePiece(5); //key: 5
+    if (keyPressed==54) placePiece(6); //key: 6
+} //evalKey(event)
+function evalKeyUp(evnt) {
+    let keyPressed = evnt.keyCode;
+    console.log ("keyUp: ",keyPressed);
+    if (keyPressed==81) resetPiece(1); //key: q
+    if (keyPressed==87) resetPiece(2); //key: w
+    if (keyPressed==69) resetPiece(3); //key: e
+    if (keyPressed==82) resetPiece(4); //key: r
+    if (keyPressed==84) resetPiece(5); //key: t
+    if (keyPressed==89) resetPiece(6); //key: y
+    if (keyPressed==16) leavePiece(); //key: Shift
 } //evalKey(event)
 //}}}event listeners
 
@@ -64,16 +92,14 @@ function placeLocations() {
 function initWin() {
     //Get a reference to the canvas
     bgX = document.getElementById('backgroundX');
-    //
+    
     //context_bgX = bgX.getContext('2d');
-    //resizeElements();
-    //console.log ("windowWidth: "+ window.innerWidth);
 
     scaleX = bgX.clientWidth/bgX.naturalWidth;
     scaleY = bgX.clientHeight/bgX.naturalHeight;
     //console.log ("scale: ("+scaleX+","+scaleY+")");
     placeLocations();
-    for (var pInx=1; pInx<pieces.length+1; pInx++) {
+    for (let pInx=1; pInx<pieces.length+1; pInx++) {
         console.log ("pInx: ",pInx);
         pieces[pInx-1].Width = Math.round (scaleX*pieces[pInx-1].naturalWidth);
         pieces[pInx-1].Height = Math.round (scaleY*pieces[pInx-1].naturalHeight);
@@ -93,30 +119,44 @@ function initWin() {
     //console.log ("bgX posX: "+ bgX.offsetLeft);
     //console.log ("bgX posY: "+ bgX.offsetTop);
 
-    //let comVal;
-    //comVal =  Math.round(180/80);
-    //console.log ("Ans: "+comVal);
-
     //window.requestAnimationFrame(animateLoop);
 } //function init()
 
-function resizeElements() {
-    bgX.width = 0.8*window.innerWidth;
-    bgX.height = 0.8*window.innerHeight;
-} //function resizeCanvas()
-
-function animateLoop(timeStamp) {
-
-    //set delay between executions
-    setTimeout (function() {
-        window.requestAnimationFrame(animateLoop);
-    }, 100);//setInterval (function()
-
-} //function animateLoop(timeStap)
 //}}}window init
 
 //{{{handler functions
+function selectPiece(numPassed) {
+    pickedNum=numPassed;
+    window.addEventListener("mousemove",followMouse);
+    insertCss (".pieceClass {transition: 0ms;}"); 
+} //function selectPiece(pieceNum)
+function placePiece(numPassed) {
+    pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[numPassed-1].placeX)+'px';
+    pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[numPassed-1].placeY)+'px';
+} //function selectPiece(pieceNum)
+function resetPiece() {
+    window.removeEventListener("mousemove",followMouse);
+    insertCss (".pieceClass {transition: 100ms;}"); 
+    pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[pickedNum-1].pickX)+'px';
+    pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[pickedNum-1].pickY)+'px';
+} //function selectPiece(pieceNum)
+function movePiece() {
+    window.addEventListener("mousemove",followMouse);
+    insertCss (".pieceClass {transition: 0ms;}"); 
+    console.log("picked", pickedNum); 
+} //function leavePiece()
+function leavePiece() {
+    window.removeEventListener("mousemove",followMouse);
+    insertCss (".pieceClass {transition: 100ms;}"); 
+} //function leavePiece()
+function followMouse() {
+    
+    let x = event.clientX;
+    let y = event.clientY;
+    pieces[pickedNum-1].style.left = x+'px';
+    pieces[pickedNum-1].style.top = y+'px';
 
+} //function followMouse()
 
 //}}}handler functions
 
