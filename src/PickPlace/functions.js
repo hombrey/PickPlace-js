@@ -127,7 +127,12 @@ function initWin() {
         
         insertCss ("#piece"+pInx+"{left: "+ pieces[pInx-1].X +"px; top: "+ pieces[pInx-1].Y +"px;}");
 
+        insertCss ("#piece"+pInx+"{z-index: 1;}");
         pieces[pInx-1].show = true;
+        //Make the DIV element draggagle:
+        dragElement(document.getElementById("piece"+pInx));
+
+
         //console.log ("#piece"+pInx+"{left: "+ pieces[pInx-1].X +"px; top: "+ pieces[pInx-1].Y +"px;}");
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
     
@@ -147,6 +152,7 @@ function clickPiece(clicked_id) {
     let clickedNum = parseInt(extractIdNum);
     pickedNum = clickedNum;
     pickSound.play();
+    raisePiece();
 } //function clickPiece(clicked_id)
 function selectPiece(numPassed) {
     pickedNum=numPassed;
@@ -180,8 +186,8 @@ function followMouse() {
     let y = event.clientY;
     pieces[pickedNum-1].style.left = x+'px';
     pieces[pickedNum-1].style.top = y+'px';
-
 } //function followMouse()
+
 function playPrompt() {
     pieces[pickedNum-1].prompt.play();
 } //function playPrompt()
@@ -204,6 +210,50 @@ function hideAll() {
 //}}}handler functions
 
 //{{{helper functions
+function raisePiece() {
+    for (let pInx=1; pInx<pieces.length+1; pInx++) {
+        insertCss ("#piece"+pInx+"{z-index: 1;}");
+    } //for (pInx=1; pInx=pieces.size+1; pInx+)
+   insertCss ("#piece"+pickedNum+"{z-index: 3;}");
+} //function raisePiece(numPassed)
+function dragElement(elmnt) {
+  var dragX = 0, dragY = 0;
+
+    elmnt.onmousedown = dragMouseDown; 
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    dragX = e.clientX;
+    dragY = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  } //function dragMouseDown(e)
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    //pos1 = e.clientX;
+    //pos2 = e.clientY;
+    dragX = e.clientX;
+    dragY = e.clientY;
+    // set the element's new position:
+    //elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    //elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    elmnt.style.top = ( dragY) + "px";
+    elmnt.style.left = (  dragX) + "px";
+  } // function elementDrag(e)
+
+  function closeDragElement() {
+    /* stop moving when mouse button is released:*/
+    document.onmouseup = null;
+    document.onmousemove = null;
+  } //function closeDragElement() 
+} //function dragElement(elmnt) 
+
 function sound(src) {
     this.sound = document.createElement("audio");
     this.sound.src = src;

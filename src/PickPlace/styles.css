@@ -22,6 +22,7 @@ body {
     width: 10vw;
     margin: auto;
     overflow-x: hidden;
+    cursor: move;
     transition:  50ms;
 } /*fullPage*/
 /*}}}class*/
