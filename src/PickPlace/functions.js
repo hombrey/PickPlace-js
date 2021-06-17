@@ -105,7 +105,17 @@ function placeLocations() {
 
     pickSound = new sound("./src/PickPlace/wav/pick.mp3");
 } //function placePieces
+
+//make sure elements are loaded before proceeding
+const checkElement = async selector => {
+  while ( document.querySelector(selector) === null) {
+    await new Promise( resolve =>  requestAnimationFrame(resolve) )
+  } //while ( document.querySelector(selector) === null)
+  return document.querySelector(selector); 
+}; //const checkElement = async selector
+
 function initWin() {
+setTimeout (function() { //set delay before calculating drawable parameters
     //Get a reference to the canvas
     bgX = document.getElementById('backgroundX');
     
@@ -142,6 +152,7 @@ function initWin() {
     //console.log ("bgX posY: "+ bgX.offsetTop);
 
     //window.requestAnimationFrame(animateLoop);
+}, 3);//setTimeOut (function()
 } //function init()
 
 //}}}window init
