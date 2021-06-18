@@ -138,6 +138,7 @@ setTimeout (function() { //set delay before calculating drawable parameters
         xAdj =(-1)*Math.round(pieces[pInx-1].Width/2);
         yAdj =(-1)*Math.round(pieces[pInx-1].Height/2);
         dragElement(document.getElementById("piece"+pInx));
+        touchElement(document.getElementById("piece"+pInx));
 
         //console.log ("#piece"+pInx+"{left: "+ pieces[pInx-1].X +"px; top: "+ pieces[pInx-1].Y +"px;}");
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
@@ -219,6 +220,8 @@ function raisePiece() {
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
    insertCss ("#piece"+pickedNum+"{z-index: 3;}");
 } //function raisePiece(numPassed)
+
+//===========================================================================
 function dragElement(elmnt) {
   var dragX = 0, dragY = 0;
 
@@ -256,6 +259,56 @@ function dragElement(elmnt) {
     document.onmousemove = null;
   } //function closeDragElement() 
 } //function dragElement(elmnt) 
+
+//===========================================================================
+function touchElement(elmnt) {
+  var touchX = 0, touchY = 0;
+
+    elmnt.ontouchstart = dragFinger; 
+
+  function dragFinger(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    getTouchPos(e);
+    document.ontouchend = closeTouchElement;
+    // call a function whenever the cursor moves:
+    document.ontouchmove = elementDrag;
+  } //function dragFinger(e)
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    getTouchPos(e);
+
+    //pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[pickedNum-1].touchX)+'px';
+    //pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[pickedNum-1].touchY)+'px';
+    elmnt.style.top = (touchY) + "px";
+    elmnt.style.left = (touchX) + "px";
+  } // function elementDrag(e)
+
+  function getTouchPos(e) {
+        if(e.touches) {
+            if (e.touches.length == 1) { // Only deal with one finger
+                var touch = e.touches[0]; // Get the information for finger #1
+                //touchX=touch.pageX-touch.target.offsetLeft;
+                //touchY=touch.pageY-touch.target.offsetTop;
+                touchX=touch.pageX+xAdj/2;
+                touchY=touch.pageY+yAdj/2;
+            } //if (e.touches.lenth ==1) ...
+        } //if (e.touches)
+  } //function getTouchPos(e)
+
+  function closeTouchElement() {
+    /* stop moving when mouse button is released:*/
+    document.ontouchend = null;
+    document.ontouchmove = null;
+    //pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[pickedNum-1].touchX)+'px';
+    //pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[pickedNum-1].touchY)+'px';
+  } //function closeTouchElement() 
+} //function touchElement(elmnt) 
+//===========================================================================
 
 function sound(src) {
     this.sound = document.createElement("audio");
