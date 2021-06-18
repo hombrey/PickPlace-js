@@ -7,6 +7,7 @@ let piece1;
 let pieces;
 let pickedNum=1;
 let pickSound;
+let xAdj, yAdj;
 ;//}}}variable declarations
 
 //{{{event listeners
@@ -106,15 +107,9 @@ function placeLocations() {
     pickSound = new sound("./src/PickPlace/wav/pick.mp3");
 } //function placePieces
 
-//make sure elements are loaded before proceeding
-const checkElement = async selector => {
-  while ( document.querySelector(selector) === null) {
-    await new Promise( resolve =>  requestAnimationFrame(resolve) )
-  } //while ( document.querySelector(selector) === null)
-  return document.querySelector(selector); 
-}; //const checkElement = async selector
 
 function initWin() {
+document.getElementById('piece6').onload = function () { //wait for element before loading
 setTimeout (function() { //set delay before calculating drawable parameters
     //Get a reference to the canvas
     bgX = document.getElementById('backgroundX');
@@ -140,19 +135,16 @@ setTimeout (function() { //set delay before calculating drawable parameters
         insertCss ("#piece"+pInx+"{z-index: 1;}");
         pieces[pInx-1].show = true;
         //Make the DIV element draggagle:
+        xAdj =(-1)*Math.round(pieces[pInx-1].Width/2);
+        yAdj =(-1)*Math.round(pieces[pInx-1].Height/2);
         dragElement(document.getElementById("piece"+pInx));
-
 
         //console.log ("#piece"+pInx+"{left: "+ pieces[pInx-1].X +"px; top: "+ pieces[pInx-1].Y +"px;}");
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
     
-    //console.log ("bgX CSS-height: "+ bgXstyle.height);
-    //console.log ("bgX CSS-width: "+ bgXstyle.width);
-    //console.log ("bgX posX: "+ bgX.offsetLeft);
-    //console.log ("bgX posY: "+ bgX.offsetTop);
 
-    //window.requestAnimationFrame(animateLoop);
-}, 3);//setTimeOut (function()
+}, 30);//setTimeOut (function()
+};//document.getElementById(' ... wait for element before loading
 } //function init()
 
 //}}}window init
@@ -193,8 +185,8 @@ function leavePiece() {
     insertCss (".pieceClass {transition: 100ms;}"); 
 } //function leavePiece()
 function followMouse() {
-    let x = event.clientX;
-    let y = event.clientY;
+    let x = event.clientX+xAdj;
+    let y = event.clientY+yAdj;
     pieces[pickedNum-1].style.left = x+'px';
     pieces[pickedNum-1].style.top = y+'px';
 } //function followMouse()
@@ -236,8 +228,8 @@ function dragElement(elmnt) {
     e = e || window.event;
     e.preventDefault();
     // get the mouse cursor position at startup:
-    dragX = e.clientX;
-    dragY = e.clientY;
+    dragX = e.clientX+xAdj;
+    dragY = e.clientY+yAdj;
     document.onmouseup = closeDragElement;
     // call a function whenever the cursor moves:
     document.onmousemove = elementDrag;
@@ -247,10 +239,10 @@ function dragElement(elmnt) {
     e = e || window.event;
     e.preventDefault();
     // calculate the new cursor position:
-    //pos1 = e.clientX;
-    //pos2 = e.clientY;
-    dragX = e.clientX;
-    dragY = e.clientY;
+    //pos1 = e.clientX+xAdj;
+    //pos2 = e.clientY+yAdj;
+    dragX = e.clientX+xAdj;
+    dragY = e.clientY+yAdj;
     // set the element's new position:
     //elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
     //elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
