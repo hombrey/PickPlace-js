@@ -37,20 +37,21 @@ function evalKeyDown(evnt) {
     if(event.shiftKey) if (keyPressed==52) placePiece(4); //key: shift-4
     if(event.shiftKey) if (keyPressed==53) placePiece(5); //key: shift-5
     if(event.shiftKey) if (keyPressed==54) placePiece(6); //key: shift-6
+    if(!event.shiftKey) if (keyPressed==80) resetPiece(pickedNum); //key: p
+    if(!event.shiftKey) if (keyPressed==188) toggleHide(); //key: <comma>
+    if(event.shiftKey) if (keyPressed==188) hideAll();//key: <S-comma>
+    if (keyPressed==190) playPrompt();//key: <period>
 } //evalKey(event)
 function evalKeyUp(evnt) {
     let keyPressed = evnt.keyCode;
     //console.log ("keyUp: ",keyPressed);
-    if(!event.shiftKey) if (keyPressed==49) resetPiece(1); //key: 1
-    if(!event.shiftKey) if (keyPressed==50) resetPiece(2); //key: 2
-    if(!event.shiftKey) if (keyPressed==51) resetPiece(3); //key: 3
-    if(!event.shiftKey) if (keyPressed==52) resetPiece(4); //key: 4
-    if(!event.shiftKey) if (keyPressed==53) resetPiece(5); //key: 5
-    if(!event.shiftKey) if (keyPressed==54) resetPiece(6); //key: 6
+    //if(!event.shiftKey) if (keyPressed==49) resetPiece(1); //key: 1
+    //if(!event.shiftKey) if (keyPressed==50) resetPiece(2); //key: 2
+    //if(!event.shiftKey) if (keyPressed==51) resetPiece(3); //key: 3
+    //if(!event.shiftKey) if (keyPressed==52) resetPiece(4); //key: 4
+    //if(!event.shiftKey) if (keyPressed==53) resetPiece(5); //key: 5
+    //if(!event.shiftKey) if (keyPressed==54) resetPiece(6); //key: 6
     if (keyPressed==32) leavePiece(); //key: spacebar
-    if(!event.shiftKey) if (keyPressed==188) toggleHide();
-    if(event.shiftKey) if (keyPressed==188) hideAll();
-    if (keyPressed==190) playPrompt();
 } //evalKey(event)
 //}}}event listeners
 
@@ -109,7 +110,7 @@ function placeLocations() {
 
 
 function initWin() {
-document.getElementById('piece6').onload = function () { //wait for element before loading
+document.getElementById('backgroundX').onload = function () { //wait for element before loading
 setTimeout (function() { //set delay before calculating drawable parameters
     //Get a reference to the canvas
     bgX = document.getElementById('backgroundX');
@@ -160,7 +161,7 @@ function clickPiece(clicked_id) {
 } //function clickPiece(clicked_id)
 function selectPiece(numPassed) {
     pickedNum=numPassed;
-    window.addEventListener("mousemove",followMouse);
+    //window.addEventListener("mousemove",followMouse);
     insertCss (".pieceClass {transition: 0ms;}"); 
 } //function selectPiece(pieceNum)
 function placePiece(numPassed) {
