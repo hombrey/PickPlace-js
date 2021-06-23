@@ -1,6 +1,5 @@
 //{{{variable declarations
 "use strict";
-let timeStamp;
 let bgX;
 let scaleX, scaleY;
 let piece1;
@@ -247,13 +246,10 @@ function dragElement(elmnt) {
     e = e || window.event;
     e.preventDefault();
     // calculate the new cursor position:
-    //pos1 = e.clientX+xAdj;
-    //pos2 = e.clientY+yAdj;
     dragX = e.clientX+xAdj;
     dragY = e.clientY+yAdj;
+      
     // set the element's new position:
-    //elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-    //elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
     elmnt.style.top = ( dragY) + "px";
     elmnt.style.left = (  dragX) + "px";
   } // function elementDrag(e)
@@ -287,8 +283,6 @@ function touchElement(elmnt) {
     // calculate the new cursor position:
     getTouchPos(e);
 
-    //pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[pickedNum-1].touchX)+'px';
-    //pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[pickedNum-1].touchY)+'px';
     elmnt.style.top = (touchY) + "px";
     elmnt.style.left = (touchX) + "px";
   } // function elementDrag(e)
@@ -297,8 +291,6 @@ function touchElement(elmnt) {
         if(e.touches) {
             if (e.touches.length == 1) { // Only deal with one finger
                 var touch = e.touches[0]; // Get the information for finger #1
-                //touchX=touch.pageX-touch.target.offsetLeft;
-                //touchY=touch.pageY-touch.target.offsetTop;
                 touchX=touch.pageX+xAdj/2;
                 touchY=touch.pageY+yAdj/2;
             } //if (e.touches.lenth ==1) ...
@@ -309,8 +301,6 @@ function touchElement(elmnt) {
     /* stop moving when mouse button is released:*/
     document.ontouchend = null;
     document.ontouchmove = null;
-    //pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[pickedNum-1].touchX)+'px';
-    //pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[pickedNum-1].touchY)+'px';
   } //function closeTouchElement() 
 } //function touchElement(elmnt) 
 //===========================================================================
