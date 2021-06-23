@@ -15,42 +15,44 @@ window.onload = initWin();
 window.addEventListener("resize", initWin);
 window.addEventListener("keyup", evalKeyUp, false); //capture keypress on bubbling (false) phase
 window.addEventListener("keydown", evalKeyDown, false); //capture keypress on bubbling (false) phase
-/*window.addEventListener("mousedown", movePiece, true); //capture keypress on bubbling (false) phase*/
-//window.addEventListener("mouseup", leavePiece, false); //capture keypress on bubbling (false) phase
+
 function evalPress(evnt) {
     let keyPressed = evnt.keyCode;
     //console.log ("Pressed:", keyPressed);
 } //function evalPress
-//window.addEventListener("mousemove",followMouse);
+
 function evalKeyDown(evnt) {
     let keyPressed = evnt.keyCode;
-    if (keyPressed==32) movePiece(); //key: spacebar -- drag selected piece
-    if(!event.shiftKey) if (keyPressed==49) selectPiece(1); //key: 1
-    if(!event.shiftKey) if (keyPressed==50) selectPiece(2); //key: 2
-    if(!event.shiftKey) if (keyPressed==51) selectPiece(3); //key: 3
-    if(!event.shiftKey) if (keyPressed==52) selectPiece(4); //key: 4
-    if(!event.shiftKey) if (keyPressed==53) selectPiece(5); //key: 5
-    if(!event.shiftKey) if (keyPressed==54) selectPiece(6); //key: 6
-    if(event.shiftKey) if (keyPressed==49) placePiece(1); //key: shift-1
-    if(event.shiftKey) if (keyPressed==50) placePiece(2); //key: shift-2
-    if(event.shiftKey) if (keyPressed==51) placePiece(3); //key: shift-3
-    if(event.shiftKey) if (keyPressed==52) placePiece(4); //key: shift-4
-    if(event.shiftKey) if (keyPressed==53) placePiece(5); //key: shift-5
-    if(event.shiftKey) if (keyPressed==54) placePiece(6); //key: shift-6
-    if(!event.shiftKey) if (keyPressed==80) resetPiece(pickedNum); //key: p
-    if(!event.shiftKey) if (keyPressed==188) toggleHide(); //key: <comma>
-    if(event.shiftKey) if (keyPressed==188) hideAll();//key: <S-comma>
-    if (keyPressed==190) playPrompt();//key: <period>
+    switch (keyPressed) {
+        case 32 : movePiece(); //key: spacebar
+        case 49 : if(!event.shiftKey) selectPiece(1); 
+                  else placePiece(1);
+                  break; //key: 1
+        case 50 : if(!event.shiftKey) selectPiece(2); 
+                  else placePiece(2);
+                  break; //key: 2
+        case 51 : if(!event.shiftKey) selectPiece(3); 
+                  else placePiece(3);
+                   break; //key: 3
+        case 52 : if(!event.shiftKey) selectPiece(4); 
+                  else placePiece(4);
+                  break; //key: 4
+        case 53 : if(!event.shiftKey) selectPiece(5); 
+                  else placePiece(5);
+                  break; //key: 5
+        case 54 : if(!event.shiftKey) selectPiece(6); 
+                  else placePiece(6);
+                  break; //key: 6
+        case 80 : if(!event.shiftKey) resetPiece(pickedNum); break;//key: p
+        case 188 :if(!event.shiftKey) toggleHide(); 
+                  else  hideAll(); 
+                  break;//key: <comma>
+        case 190 : playPrompt(); break;//key: <period>
+        default : return;
+    } //switch (keyPressed)
 } //evalKey(event)
 function evalKeyUp(evnt) {
     let keyPressed = evnt.keyCode;
-    //console.log ("keyUp: ",keyPressed);
-    //if(!event.shiftKey) if (keyPressed==49) resetPiece(1); //key: 1
-    //if(!event.shiftKey) if (keyPressed==50) resetPiece(2); //key: 2
-    //if(!event.shiftKey) if (keyPressed==51) resetPiece(3); //key: 3
-    //if(!event.shiftKey) if (keyPressed==52) resetPiece(4); //key: 4
-    //if(!event.shiftKey) if (keyPressed==53) resetPiece(5); //key: 5
-    //if(!event.shiftKey) if (keyPressed==54) resetPiece(6); //key: 6
     if (keyPressed==32) leavePiece(); //key: spacebar
 } //evalKey(event)
 //}}}event listeners
@@ -152,17 +154,19 @@ setTimeout (function() { //set delay before calculating drawable parameters
 //}}}window init
 
 //{{{handler functions
-function clickPiece(clicked_id) {
+function clickPiece(clicked_id) { //handler for mouse clicks
     let extractIdNum = (clicked_id.replace("piece",""));
     let clickedNum = parseInt(extractIdNum);
     pickedNum = clickedNum;
     pickSound.play();
     raisePiece();
 } //function clickPiece(clicked_id)
-function selectPiece(numPassed) {
+function selectPiece(numPassed) { //handler for using the keyboard to select a piece
     pickedNum=numPassed;
     //window.addEventListener("mousemove",followMouse);
-    insertCss (".pieceClass {transition: 0ms;}"); 
+    pickSound.play();
+    raisePiece();
+    //insertCss (".pieceClass {transition: 0ms;}"); 
 } //function selectPiece(pieceNum)
 function placePiece(numPassed) {
     pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[numPassed-1].placeX)+'px';
