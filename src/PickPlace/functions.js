@@ -14,14 +14,11 @@ window.onload = initWin();
 window.addEventListener("resize", initWin);
 window.addEventListener("keyup", evalKeyUp, false); //capture keypress on bubbling (false) phase
 window.addEventListener("keydown", evalKeyDown, false); //capture keypress on bubbling (false) phase
-
-function evalPress(evnt) {
-    let keyPressed = evnt.keyCode;
-    //console.log ("Pressed:", keyPressed);
-} //function evalPress
+window.addEventListener("contextmenu", movePiece, false); //capture keypress on bubbling (false) phase
 
 function evalKeyDown(evnt) {
     let keyPressed = evnt.keyCode;
+    //console.log ("Pressed:", keyPressed);
     switch (keyPressed) {
         case 32 : movePiece(); break;//key: spacebar
         case 49 : if(!event.shiftKey) selectPiece(1); 
@@ -42,6 +39,9 @@ function evalKeyDown(evnt) {
         case 54 : if(!event.shiftKey) selectPiece(6); 
                   else placePiece(6);
                   break; //key: 6
+        case 48 : if(!event.shiftKey) selectPiece(7); 
+                  else placePiece(7);
+                  break; //key: 0
         case 80 : if(!event.shiftKey) resetPiece(pickedNum); 
                    else resetAll();
                   break;//key: p
@@ -62,7 +62,8 @@ function evalKeyUp(evnt) {
 function placeLocations() {
     pieces = [document.getElementById('piece1'),document.getElementById('piece2'),
               document.getElementById('piece3'),document.getElementById('piece4'),
-              document.getElementById('piece5'),document.getElementById('piece6')
+              document.getElementById('piece5'),document.getElementById('piece6'),
+              document.getElementById('piece7')
     ]; //pieces =[]
 
     pieces[1-1].pickX = 500;
@@ -89,6 +90,9 @@ function placeLocations() {
     pieces[6-1].pickY = 720;
     pieces[6-1].prompt = new sound("./src/PickPlace/wav/prompt6.mp3");
 
+    pieces[7-1].pickX = 500;
+    pieces[7-1].pickY = 720;
+    pieces[7-1].prompt = new sound("./src/PickPlace/wav/prompt7.mp3");
 
     pieces[1-1].placeX = 35;
     pieces[1-1].placeY = 25;
@@ -107,6 +111,9 @@ function placeLocations() {
 
     pieces[6-1].placeX = 950;
     pieces[6-1].placeY = 390;
+
+    pieces[7-1].placeX = 500;
+    pieces[7-1].placeY = 200;
 
     pickSound = new sound("./src/PickPlace/wav/pick.mp3");
 } //function placePieces
@@ -190,17 +197,20 @@ function resetAll() {
 } //function resetAll()
 function movePiece() {
     window.addEventListener("mousemove",followMouse);
+    window.addEventListener("contextmenu", leavePiece, false); //capture keypress on bubbling (false) phase
     insertCss (".pieceClass {transition: 0ms;}"); 
     //console.log("picked", pickedNum); 
 } //function leavePiece()
 function leavePiece() {
     pickSound.start();
     window.removeEventListener("mousemove",followMouse);
+    window.removeEventListener("contextmenu", leavePiece); 
     insertCss (".pieceClass {transition: 100ms;}"); 
 } //function leavePiece()
-function followMouse() {
+function followMouse() { //activated by spacebar
     let x = event.clientX+xAdj;
-    let y = event.clientY+yAdj;
+    //let y = event.clientY+yAdj;
+    let y = event.clientY; //removed Y offset so slow reveal can be done. using bottom edge
     pieces[pickedNum-1].style.left = x+'px';
     pieces[pickedNum-1].style.top = y+'px';
 } //function followMouse()
@@ -245,7 +255,7 @@ function dragElement(elmnt) {
     e.preventDefault();
     // get the mouse cursor position at startup:
     dragX = e.clientX+xAdj;
-    dragY = e.clientY+yAdj;
+    dragY = e.clientY+yAdj; 
     document.onmouseup = closeDragElement;
     // call a function whenever the cursor moves:
     document.onmousemove = elementDrag;
@@ -257,7 +267,6 @@ function dragElement(elmnt) {
     // calculate the new cursor position:
     dragX = e.clientX+xAdj;
     dragY = e.clientY+yAdj;
-      
     // set the element's new position:
     elmnt.style.top = ( dragY) + "px";
     elmnt.style.left = (  dragX) + "px";
