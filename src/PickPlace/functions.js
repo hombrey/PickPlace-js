@@ -65,48 +65,48 @@ function placeLocations() {
               document.getElementById('piece5'),document.getElementById('piece6')
     ]; //pieces =[]
 
-    pieces[1-1].pickX = 1026;
-    pieces[1-1].pickY = 426;
+    pieces[1-1].pickX = 500;
+    pieces[1-1].pickY = 720;
     pieces[1-1].prompt = new sound("./src/PickPlace/wav/prompt1.mp3");
 
-    pieces[2-1].pickX = 30;
-    pieces[2-1].pickY = 441;
+    pieces[2-1].pickX = 500;
+    pieces[2-1].pickY = 720;
     pieces[2-1].prompt = new sound("./src/PickPlace/wav/prompt2.mp3");
 
-    pieces[3-1].pickX = 10;
-    pieces[3-1].pickY = 31;
+    pieces[3-1].pickX = 500;
+    pieces[3-1].pickY = 720;
     pieces[3-1].prompt = new sound("./src/PickPlace/wav/prompt3.mp3");
 
-    pieces[4-1].pickX = 736;
-    pieces[4-1].pickY = 482;
+    pieces[4-1].pickX = 500;
+    pieces[4-1].pickY = 720;
     pieces[4-1].prompt = new sound("./src/PickPlace/wav/prompt4.mp3");
 
-    pieces[5-1].pickX = 365;
-    pieces[5-1].pickY = 475;
+    pieces[5-1].pickX = 500;
+    pieces[5-1].pickY = 720;
     pieces[5-1].prompt = new sound("./src/PickPlace/wav/prompt5.mp3");
 
-    pieces[6-1].pickX = 1019;
-    pieces[6-1].pickY = 12;
+    pieces[6-1].pickX = 500;
+    pieces[6-1].pickY = 720;
     pieces[6-1].prompt = new sound("./src/PickPlace/wav/prompt6.mp3");
 
 
-    pieces[1-1].placeX = 349;
-    pieces[1-1].placeY = 15;
+    pieces[1-1].placeX = 35;
+    pieces[1-1].placeY = 25;
 
-    pieces[2-1].placeX = 551;
-    pieces[2-1].placeY = 15;
+    pieces[2-1].placeX = 500;
+    pieces[2-1].placeY = 25;
 
-    pieces[3-1].placeX = 703;
-    pieces[3-1].placeY = 15;
+    pieces[3-1].placeX = 950;
+    pieces[3-1].placeY = 25;
 
-    pieces[4-1].placeX = 349;
-    pieces[4-1].placeY = 237;
+    pieces[4-1].placeX = 35;
+    pieces[4-1].placeY = 390;
 
-    pieces[5-1].placeX = 551;
-    pieces[5-1].placeY = 237;
+    pieces[5-1].placeX = 500;
+    pieces[5-1].placeY = 390;
 
-    pieces[6-1].placeX = 703;
-    pieces[6-1].placeY = 237;
+    pieces[6-1].placeX = 950;
+    pieces[6-1].placeY = 390;
 
     pickSound = new sound("./src/PickPlace/wav/pick.mp3");
 } //function placePieces
@@ -159,29 +159,30 @@ function clickPiece(clicked_id) { //handler for mouse clicks
     let extractIdNum = (clicked_id.replace("piece",""));
     let clickedNum = parseInt(extractIdNum);
     pickedNum = clickedNum;
-    pickSound.play();
+    pickSound.start();
     raisePiece();
 } //function clickPiece(clicked_id)
 function selectPiece(numPassed) { //handler for using the keyboard to select a piece
     pickedNum=numPassed;
-    pickSound.play();
+    //pickSound.stop();
+    pickSound.start();
     raisePiece();
     //insertCss (".pieceClass {transition: 0ms;}"); 
 } //function selectPiece(pieceNum)
 function placePiece(numPassed) {
     pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[numPassed-1].placeX)+'px';
     pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[numPassed-1].placeY)+'px';
-    pickSound.play();
+    pickSound.start();
 } //function selectPiece(pieceNum)
 function resetPiece() {
-    pickSound.play();
+    pickSound.start();
     //window.removeEventListener("mousemove",followMouse);
     //insertCss (".pieceClass {transition: 100ms;}"); 
     pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[pickedNum-1].pickX)+'px';
     pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[pickedNum-1].pickY)+'px';
 } //function selectPiece(pieceNum)
 function resetAll() {
-    pickSound.play();
+    pickSound.start();
     for (let pInx=1; pInx<pieces.length+1; pInx++) {
         pieces[pInx-1].style.left = Math.round (scaleX*pieces[pInx-1].pickX)+'px';
         pieces[pInx-1].style.top = Math.round (scaleY*pieces[pInx-1].pickY)+'px';
@@ -193,7 +194,7 @@ function movePiece() {
     //console.log("picked", pickedNum); 
 } //function leavePiece()
 function leavePiece() {
-    pickSound.play();
+    pickSound.start();
     window.removeEventListener("mousemove",followMouse);
     insertCss (".pieceClass {transition: 100ms;}"); 
 } //function leavePiece()
@@ -212,7 +213,7 @@ function toggleHide() {
         pieces[pickedNum-1].src ="./src/PickPlace/img/"+pickedNum+"h.jpg";
         pieces[pickedNum-1].show=false;
     } else {//if (pieces[pickedNum-1].show)
-        pieces[pickedNum-1].src ="./src/PickPlace/img/"+pickedNum+".png";
+        pieces[pickedNum-1].src ="./src/PickPlace/img/"+pickedNum+".jpg";
         pieces[pickedNum-1].show=true;
     } // else //if (pieces[pickedNum-1 ...
 } //function toggleHide()
@@ -320,11 +321,17 @@ function sound(src) {
     this.sound.setAttribute("controls", "none");
     this.sound.style.display = "none";
     document.body.appendChild(this.sound);
+    this.start = function(){
+        this.sound.pause();
+        this.sound.currentTime = 0;
+        this.sound.play();
+    } //this.start = function(){
     this.play = function(){
         this.sound.play();
     } //this.play = function(){
     this.stop = function(){
         this.sound.pause();
+        this.sound.currentTime = 0;
     }//this.stop = function(){    
 }//function sound(src)
 
