@@ -23,7 +23,7 @@ function evalPress(evnt) {
 function evalKeyDown(evnt) {
     let keyPressed = evnt.keyCode;
     switch (keyPressed) {
-        case 32 : movePiece(); //key: spacebar
+        case 32 : movePiece(); break;//key: spacebar
         case 49 : if(!event.shiftKey) selectPiece(1); 
                   else placePiece(1);
                   break; //key: 1
@@ -42,9 +42,11 @@ function evalKeyDown(evnt) {
         case 54 : if(!event.shiftKey) selectPiece(6); 
                   else placePiece(6);
                   break; //key: 6
-        case 80 : if(!event.shiftKey) resetPiece(pickedNum); break;//key: p
+        case 80 : if(!event.shiftKey) resetPiece(pickedNum); 
+                   else resetAll();
+                  break;//key: p
         case 188 :if(!event.shiftKey) toggleHide(); 
-                  else  hideAll(); 
+                   else  hideAll(); 
                   break;//key: <comma>
         case 190 : playPrompt(); break;//key: <period>
         default : return;
@@ -162,7 +164,6 @@ function clickPiece(clicked_id) { //handler for mouse clicks
 } //function clickPiece(clicked_id)
 function selectPiece(numPassed) { //handler for using the keyboard to select a piece
     pickedNum=numPassed;
-    //window.addEventListener("mousemove",followMouse);
     pickSound.play();
     raisePiece();
     //insertCss (".pieceClass {transition: 0ms;}"); 
@@ -174,15 +175,22 @@ function placePiece(numPassed) {
 } //function selectPiece(pieceNum)
 function resetPiece() {
     pickSound.play();
-    window.removeEventListener("mousemove",followMouse);
-    insertCss (".pieceClass {transition: 100ms;}"); 
+    //window.removeEventListener("mousemove",followMouse);
+    //insertCss (".pieceClass {transition: 100ms;}"); 
     pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[pickedNum-1].pickX)+'px';
     pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[pickedNum-1].pickY)+'px';
 } //function selectPiece(pieceNum)
+function resetAll() {
+    pickSound.play();
+    for (let pInx=1; pInx<pieces.length+1; pInx++) {
+        pieces[pInx-1].style.left = Math.round (scaleX*pieces[pInx-1].pickX)+'px';
+        pieces[pInx-1].style.top = Math.round (scaleY*pieces[pInx-1].pickY)+'px';
+    } //for (pInx=1; pInx=pieces.size+1; pInx+)
+} //function resetAll()
 function movePiece() {
     window.addEventListener("mousemove",followMouse);
     insertCss (".pieceClass {transition: 0ms;}"); 
-    console.log("picked", pickedNum); 
+    //console.log("picked", pickedNum); 
 } //function leavePiece()
 function leavePiece() {
     pickSound.play();
