@@ -159,29 +159,30 @@ function clickPiece(clicked_id) { //handler for mouse clicks
     let extractIdNum = (clicked_id.replace("piece",""));
     let clickedNum = parseInt(extractIdNum);
     pickedNum = clickedNum;
-    pickSound.play();
+    pickSound.start();
     raisePiece();
 } //function clickPiece(clicked_id)
 function selectPiece(numPassed) { //handler for using the keyboard to select a piece
     pickedNum=numPassed;
-    pickSound.play();
+    //pickSound.stop();
+    pickSound.start();
     raisePiece();
     //insertCss (".pieceClass {transition: 0ms;}"); 
 } //function selectPiece(pieceNum)
 function placePiece(numPassed) {
     pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[numPassed-1].placeX)+'px';
     pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[numPassed-1].placeY)+'px';
-    pickSound.play();
+    pickSound.start();
 } //function selectPiece(pieceNum)
 function resetPiece() {
-    pickSound.play();
+    pickSound.start();
     //window.removeEventListener("mousemove",followMouse);
     //insertCss (".pieceClass {transition: 100ms;}"); 
     pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[pickedNum-1].pickX)+'px';
     pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[pickedNum-1].pickY)+'px';
 } //function selectPiece(pieceNum)
 function resetAll() {
-    pickSound.play();
+    pickSound.start();
     for (let pInx=1; pInx<pieces.length+1; pInx++) {
         pieces[pInx-1].style.left = Math.round (scaleX*pieces[pInx-1].pickX)+'px';
         pieces[pInx-1].style.top = Math.round (scaleY*pieces[pInx-1].pickY)+'px';
@@ -193,7 +194,7 @@ function movePiece() {
     //console.log("picked", pickedNum); 
 } //function leavePiece()
 function leavePiece() {
-    pickSound.play();
+    pickSound.start();
     window.removeEventListener("mousemove",followMouse);
     insertCss (".pieceClass {transition: 100ms;}"); 
 } //function leavePiece()
@@ -320,11 +321,17 @@ function sound(src) {
     this.sound.setAttribute("controls", "none");
     this.sound.style.display = "none";
     document.body.appendChild(this.sound);
+    this.start = function(){
+        this.sound.pause();
+        this.sound.currentTime = 0;
+        this.sound.play();
+    } //this.start = function(){
     this.play = function(){
         this.sound.play();
     } //this.play = function(){
     this.stop = function(){
         this.sound.pause();
+        this.sound.currentTime = 0;
     }//this.stop = function(){    
 }//function sound(src)
 
