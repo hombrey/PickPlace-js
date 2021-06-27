@@ -1,6 +1,6 @@
 /*{{{element selector*/
 body {
-    background-color: black;
+    /*background-color: black;*/
 }
         /*}}}element selector*/
 
@@ -25,6 +25,12 @@ body {
     cursor: move;
     transition:  50ms;
 } /*fullPage*/
+.selectBox {
+    position: fixed;
+    overflow-x: hidden;
+    top: 0px;
+    left: 0px;
+} /*.selectBox*/
 /*}}}class*/
 
 /*{{{id selector*/

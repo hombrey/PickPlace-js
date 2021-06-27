@@ -7,6 +7,7 @@ let pieces;
 let pickedNum=1;
 let pickSound;
 let xAdj, yAdj;
+let sourceDir;
 ;//}}}variable declarations
 
 //{{{event listeners
@@ -20,7 +21,7 @@ function evalKeyDown(evnt) {
     let keyPressed = evnt.keyCode;
     //console.log ("Pressed:", keyPressed);
     switch (keyPressed) {
-        case 32 : movePiece(); break;//key: spacebar
+        case 32 : evnt.preventDefault(); movePiece(); break;//key: spacebar
         case 49 : if(!event.shiftKey) selectPiece(1); 
                   else placePiece(1);
                   break; //key: 1
@@ -45,10 +46,11 @@ function evalKeyDown(evnt) {
         case 80 : if(!event.shiftKey) resetPiece(pickedNum); 
                    else resetAll();
                   break;//key: p
-        case 188 :if(!event.shiftKey) toggleHide(); 
-                   else  hideAll(); 
+       case 188 : if(!event.shiftKey) toggleHide(); 
+                  else  hideAll(); 
                   break;//key: <comma>
-        case 190 : playPrompt(); break;//key: <period>
+       case 190 : playPrompt(); break;//key: <period>
+        case 27 : parent.focus(); break; //key: Escape --This gives control back to reveal.js when in an iframe 
         default : return;
     } //switch (keyPressed)
 } //evalKey(event)
@@ -68,31 +70,31 @@ function placeLocations() {
 
     pieces[1-1].pickX = 500;
     pieces[1-1].pickY = 720;
-    pieces[1-1].prompt = new sound("./src/PickPlace/wav/prompt1.mp3");
+    pieces[1-1].prompt = new sound(sourceDir+"wav/prompt1.mp3");
 
     pieces[2-1].pickX = 500;
     pieces[2-1].pickY = 720;
-    pieces[2-1].prompt = new sound("./src/PickPlace/wav/prompt2.mp3");
+    pieces[2-1].prompt = new sound(sourceDir+"wav/prompt2.mp3");
 
     pieces[3-1].pickX = 500;
     pieces[3-1].pickY = 720;
-    pieces[3-1].prompt = new sound("./src/PickPlace/wav/prompt3.mp3");
+    pieces[3-1].prompt = new sound(sourceDir+"wav/prompt3.mp3");
 
     pieces[4-1].pickX = 500;
     pieces[4-1].pickY = 720;
-    pieces[4-1].prompt = new sound("./src/PickPlace/wav/prompt4.mp3");
+    pieces[4-1].prompt = new sound(sourceDir+"wav/prompt4.mp3");
 
     pieces[5-1].pickX = 500;
     pieces[5-1].pickY = 720;
-    pieces[5-1].prompt = new sound("./src/PickPlace/wav/prompt5.mp3");
+    pieces[5-1].prompt = new sound(sourceDir+"wav/prompt5.mp3");
 
     pieces[6-1].pickX = 500;
     pieces[6-1].pickY = 720;
-    pieces[6-1].prompt = new sound("./src/PickPlace/wav/prompt6.mp3");
+    pieces[6-1].prompt = new sound(sourceDir+"wav/prompt6.mp3");
 
     pieces[7-1].pickX = 500;
     pieces[7-1].pickY = 720;
-    pieces[7-1].prompt = new sound("./src/PickPlace/wav/prompt7.mp3");
+    pieces[7-1].prompt = new sound(sourceDir+"wav/prompt7.mp3");
 
     pieces[1-1].placeX = 35;
     pieces[1-1].placeY = 25;
@@ -115,18 +117,20 @@ function placeLocations() {
     pieces[7-1].placeX = 500;
     pieces[7-1].placeY = 200;
 
-    pickSound = new sound("./src/PickPlace/wav/pick.mp3");
+    pickSound = new sound(sourceDir+"wav/pick.mp3");
 } //function placePieces
 
 
 function initWin() {
 document.getElementById('backgroundX').onload = function () { //wait for element before loading
 setTimeout (function() { //set delay before calculating drawable parameters
+
+    //Get project source
+    sourceDir = document.getElementById("srcdir").innerHTML;
+
     //Get a reference to the canvas
     bgX = document.getElementById('backgroundX');
     
-    //context_bgX = bgX.getContext('2d');
-
     scaleX = bgX.clientWidth/bgX.naturalWidth;
     scaleY = bgX.clientHeight/bgX.naturalHeight;
     //console.log ("scale: ("+scaleX+","+scaleY+")");
@@ -154,6 +158,7 @@ setTimeout (function() { //set delay before calculating drawable parameters
         //console.log ("#piece"+pInx+"{left: "+ pieces[pInx-1].X +"px; top: "+ pieces[pInx-1].Y +"px;}");
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
     
+    document.getElementById("dummy").focus(); //dummy select element that grabs the focus of the iframe
 
 }, 30);//setTimeOut (function()
 };//document.getElementById(' ... wait for element before loading
@@ -220,16 +225,16 @@ function playPrompt() {
 } //function playPrompt()
 function toggleHide() {
     if (pieces[pickedNum-1].show) {
-        pieces[pickedNum-1].src ="./src/PickPlace/img/"+pickedNum+"h.jpg";
+        pieces[pickedNum-1].src =sourceDir+"img/"+pickedNum+"h.jpg";
         pieces[pickedNum-1].show=false;
     } else {//if (pieces[pickedNum-1].show)
-        pieces[pickedNum-1].src ="./src/PickPlace/img/"+pickedNum+".jpg";
+        pieces[pickedNum-1].src =sourceDir+"img/"+pickedNum+".jpg";
         pieces[pickedNum-1].show=true;
     } // else //if (pieces[pickedNum-1 ...
 } //function toggleHide()
 function hideAll() {
     for (let pInx=1; pInx<pieces.length+1; pInx++) {
-        pieces[pInx-1].src ="./src/PickPlace/img/"+pInx+"h.jpg";
+        pieces[pInx-1].src =sourceDir+"img/"+pInx+"h.jpg";
         pieces[pInx-1].show = false;
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
 } //function hideAll()
