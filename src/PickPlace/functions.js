@@ -68,56 +68,34 @@ function placeLocations() {
               document.getElementById('piece7')
     ]; //pieces =[]
 
-    pieces[1-1].pickX = 500;
-    pieces[1-1].pickY = 720;
+    pieces[1-1].pickX = 500; pieces[1-1].placeX = 35;
+    pieces[1-1].pickY = 720; pieces[1-1].placeY = 25;
     pieces[1-1].prompt = new sound(sourceDir+"wav/prompt1.mp3");
 
-    pieces[2-1].pickX = 500;
-    pieces[2-1].pickY = 720;
+    pieces[2-1].pickX = 500; pieces[2-1].placeX = 500;
+    pieces[2-1].pickY = 720; pieces[2-1].placeY = 25;
     pieces[2-1].prompt = new sound(sourceDir+"wav/prompt2.mp3");
 
-    pieces[3-1].pickX = 500;
-    pieces[3-1].pickY = 720;
+    pieces[3-1].pickX = 500; pieces[3-1].placeX = 950;
+    pieces[3-1].pickY = 720; pieces[3-1].placeY = 25;
     pieces[3-1].prompt = new sound(sourceDir+"wav/prompt3.mp3");
 
-    pieces[4-1].pickX = 500;
-    pieces[4-1].pickY = 720;
+    pieces[4-1].pickX = 500; pieces[4-1].placeX = 35;
+    pieces[4-1].pickY = 720; pieces[4-1].placeY = 390;
     pieces[4-1].prompt = new sound(sourceDir+"wav/prompt4.mp3");
 
-    pieces[5-1].pickX = 500;
-    pieces[5-1].pickY = 720;
+    pieces[5-1].pickX = 500; pieces[5-1].placeX = 500;
+    pieces[5-1].pickY = 720; pieces[5-1].placeY = 390;
     pieces[5-1].prompt = new sound(sourceDir+"wav/prompt5.mp3");
 
-    pieces[6-1].pickX = 500;
-    pieces[6-1].pickY = 720;
+    pieces[6-1].pickX = 500; pieces[6-1].placeX = 950;
+    pieces[6-1].pickY = 720; pieces[6-1].pickY  = 720;
     pieces[6-1].prompt = new sound(sourceDir+"wav/prompt6.mp3");
 
-    pieces[7-1].pickX = 500;
-    pieces[7-1].pickY = 720;
+    pieces[7-1].pickX = 500; pieces[7-1].placeX = 500;
+    pieces[7-1].pickY = 720; pieces[7-1].placeY = 200;
     pieces[7-1].prompt = new sound(sourceDir+"wav/prompt7.mp3");
 
-    pieces[1-1].placeX = 35;
-    pieces[1-1].placeY = 25;
-
-    pieces[2-1].placeX = 500;
-    pieces[2-1].placeY = 25;
-
-    pieces[3-1].placeX = 950;
-    pieces[3-1].placeY = 25;
-
-    pieces[4-1].placeX = 35;
-    pieces[4-1].placeY = 390;
-
-    pieces[5-1].placeX = 500;
-    pieces[5-1].placeY = 390;
-
-    pieces[6-1].placeX = 950;
-    pieces[6-1].placeY = 390;
-
-    pieces[7-1].placeX = 500;
-    pieces[7-1].placeY = 200;
-
-    pickSound = new sound(sourceDir+"wav/pick.mp3");
 } //function placePieces
 
 
@@ -135,7 +113,8 @@ setTimeout (function() { //set delay before calculating drawable parameters
     scaleY = bgX.clientHeight/bgX.naturalHeight;
     //console.log ("scale: ("+scaleX+","+scaleY+")");
 
-    placeLocations();
+    placeLocations(); //define number of pieces and their unscaled positions here
+
     for (let pInx=1; pInx<pieces.length+1; pInx++) {
         //console.log ("pInx: ",pInx);
         pieces[pInx-1].Width = Math.round (scaleX*pieces[pInx-1].naturalWidth);
@@ -158,6 +137,7 @@ setTimeout (function() { //set delay before calculating drawable parameters
         //console.log ("#piece"+pInx+"{left: "+ pieces[pInx-1].X +"px; top: "+ pieces[pInx-1].Y +"px;}");
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
     
+    pickSound = new sound(sourceDir+"wav/pick.mp3");
     document.getElementById("dummy").focus(); //dummy select element that grabs the focus of the iframe
 
 }, 30);//setTimeOut (function()
