@@ -7,105 +7,71 @@ let pieces;
 let pickedNum=1;
 let pickSound;
 let xAdj, yAdj;
-let sourceDir;
+let assetDir,sourceDir;
 ;//}}}variable declarations
 
 //{{{event listeners
 window.onload = initWin();
 window.addEventListener("resize", initWin);
-window.addEventListener("keyup", evalKeyUp, false); //capture keypress on bubbling (false) phase
-window.addEventListener("keydown", evalKeyDown, false); //capture keypress on bubbling (false) phase
-window.addEventListener("contextmenu", movePiece, false); //capture keypress on bubbling (false) phase
 
-function evalKeyDown(evnt) {
-    let keyPressed = evnt.keyCode;
-    //console.log ("Pressed:", keyPressed);
-    switch (keyPressed) {
-        case 32 : evnt.preventDefault(); movePiece(); break;//key: spacebar
-        case 49 : if(!event.shiftKey) selectPiece(1); 
-                  else placePiece(1);
-                  break; //key: 1
-        case 50 : if(!event.shiftKey) selectPiece(2); 
-                  else placePiece(2);
-                  break; //key: 2
-        case 51 : if(!event.shiftKey) selectPiece(3); 
-                  else placePiece(3);
-                   break; //key: 3
-        case 52 : if(!event.shiftKey) selectPiece(4); 
-                  else placePiece(4);
-                  break; //key: 4
-        case 53 : if(!event.shiftKey) selectPiece(5); 
-                  else placePiece(5);
-                  break; //key: 5
-        case 54 : if(!event.shiftKey) selectPiece(6); 
-                  else placePiece(6);
-                  break; //key: 6
-        case 48 : if(!event.shiftKey) selectPiece(7); 
-                  else placePiece(7);
-                  break; //key: 0
-        case 80 : if(!event.shiftKey) resetPiece(pickedNum); 
-                   else resetAll();
-                  break;//key: p
-       case 188 : if(!event.shiftKey) toggleHide(); 
-                  else  hideAll(); 
-                  break;//key: <comma>
-       case 190 : playPrompt(); break;//key: <period>
-        case 27 : parent.focus(); break; //key: Escape --This gives control back to reveal.js when in an iframe 
-        default : return;
-    } //switch (keyPressed)
-} //evalKey(event)
-function evalKeyUp(evnt) {
-    let keyPressed = evnt.keyCode;
-    if (keyPressed==32) leavePiece(); //key: spacebar
-} //evalKey(event)
+//function evalKeyDown(evnt) {
+    //let keyPressed = evnt.keyCode;
+    ////console.log ("Pressed:", keyPressed);
+    //switch (keyPressed) {
+        //case 32 : evnt.preventDefault(); movePiece(); break;//key: spacebar
+        //case 49 : if(!event.shiftKey) selectPiece(1); 
+                  //else placePiece(1);
+                  //break; //key: 1
+        //case 50 : if(!event.shiftKey) selectPiece(2); 
+                  //else placePiece(2);
+                  //break; //key: 2
+        //case 51 : if(!event.shiftKey) selectPiece(3); 
+                  //else placePiece(3);
+                   //break; //key: 3
+        //case 52 : if(!event.shiftKey) selectPiece(4); 
+                  //else placePiece(4);
+                  //break; //key: 4
+        //case 53 : if(!event.shiftKey) selectPiece(5); 
+                  //else placePiece(5);
+                  //break; //key: 5
+        //case 54 : if(!event.shiftKey) selectPiece(6); 
+                  //else placePiece(6);
+                  //break; //key: 6
+        //case 48 : if(!event.shiftKey) selectPiece(7); 
+                  //else placePiece(7);
+                  //break; //key: 0
+        //case 80 : if(!event.shiftKey) resetPiece(pickedNum); 
+                   //else resetAll();
+                  //break;//key: p
+       //case 188 : if(!event.shiftKey) toggleHide(); 
+                  //else  hideAll(); 
+                  //break;//key: <comma>
+       //case 190 : playPrompt(); break;//key: <period>
+        //case 27 : parent.focus(); break; //key: Escape --This gives control back to reveal.js when in an iframe 
+        //default : return;
+    //} //switch (keyPressed)
+//} //evalKey(event)
+//function evalKeyUp(evnt) {
+    //let keyPressed = evnt.keyCode;
+    //if (keyPressed==32) leavePiece(); //key: spacebar
+//} //evalKey(event)
 //}}}event listeners
 
-//{{{initializations
-function placeLocations() {
-    pieces = [document.getElementById('piece1'),document.getElementById('piece2'),
-              document.getElementById('piece3'),document.getElementById('piece4'),
-              document.getElementById('piece5'),document.getElementById('piece6'),
-              document.getElementById('piece7')
-    ]; //pieces =[]
-
-    pieces[1-1].pickX = 500; pieces[1-1].placeX = 35;
-    pieces[1-1].pickY = 720; pieces[1-1].placeY = 25;
-    pieces[1-1].prompt = new sound(sourceDir+"wav/prompt1.mp3");
-
-    pieces[2-1].pickX = 500; pieces[2-1].placeX = 500;
-    pieces[2-1].pickY = 720; pieces[2-1].placeY = 25;
-    pieces[2-1].prompt = new sound(sourceDir+"wav/prompt2.mp3");
-
-    pieces[3-1].pickX = 500; pieces[3-1].placeX = 950;
-    pieces[3-1].pickY = 720; pieces[3-1].placeY = 25;
-    pieces[3-1].prompt = new sound(sourceDir+"wav/prompt3.mp3");
-
-    pieces[4-1].pickX = 500; pieces[4-1].placeX = 35;
-    pieces[4-1].pickY = 720; pieces[4-1].placeY = 390;
-    pieces[4-1].prompt = new sound(sourceDir+"wav/prompt4.mp3");
-
-    pieces[5-1].pickX = 500; pieces[5-1].placeX = 500;
-    pieces[5-1].pickY = 720; pieces[5-1].placeY = 390;
-    pieces[5-1].prompt = new sound(sourceDir+"wav/prompt5.mp3");
-
-    pieces[6-1].pickX = 500; pieces[6-1].placeX = 950;
-    pieces[6-1].pickY = 720; pieces[6-1].pickY  = 720;
-    pieces[6-1].prompt = new sound(sourceDir+"wav/prompt6.mp3");
-
-    pieces[7-1].pickX = 500; pieces[7-1].placeX = 500;
-    pieces[7-1].pickY = 720; pieces[7-1].placeY = 200;
-    pieces[7-1].prompt = new sound(sourceDir+"wav/prompt7.mp3");
-
-} //function placePieces
-
+//{{{window init
 
 function initWin() {
 document.getElementById('backgroundX').onload = function () { //wait for element before loading
 setTimeout (function() { //set delay before calculating drawable parameters
 
+window.addEventListener("keyup", evalKeyUp, false); //capture keypress on bubbling (false) phase
+window.addEventListener("keydown", evalKeyDown, false); //capture keypress on bubbling (false) phase
+window.addEventListener("contextmenu", movePiece, false); //capture keypress on bubbling (false) phase
     //Get project source
     sourceDir = document.getElementById("srcdir").innerHTML;
 
+    //Get location of lesson assets
+    assetDir = document.getElementById("assetdir").innerHTML;
+    
     //Get a reference to the canvas
     bgX = document.getElementById('backgroundX');
     
@@ -205,16 +171,16 @@ function playPrompt() {
 } //function playPrompt()
 function toggleHide() {
     if (pieces[pickedNum-1].show) {
-        pieces[pickedNum-1].src =sourceDir+"img/"+pickedNum+"h.jpg";
+        pieces[pickedNum-1].src =assetDir+""+pickedNum+"h.jpg";
         pieces[pickedNum-1].show=false;
     } else {//if (pieces[pickedNum-1].show)
-        pieces[pickedNum-1].src =sourceDir+"img/"+pickedNum+".jpg";
+        pieces[pickedNum-1].src =assetDir+""+pickedNum+".jpg";
         pieces[pickedNum-1].show=true;
     } // else //if (pieces[pickedNum-1 ...
 } //function toggleHide()
 function hideAll() {
     for (let pInx=1; pInx<pieces.length+1; pInx++) {
-        pieces[pInx-1].src =sourceDir+"img/"+pInx+"h.jpg";
+        pieces[pInx-1].src =assetDir+""+pInx+"h.jpg";
         pieces[pInx-1].show = false;
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
 } //function hideAll()
