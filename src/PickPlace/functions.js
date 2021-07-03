@@ -5,59 +5,15 @@ let scaleX, scaleY;
 let piece1;
 let pieces;
 let pickedNum=1;
-let pickSound;
+let pickSound,cardSound;
 let xAdj, yAdj;
 let assetDir,sourceDir;
 ;//}}}variable declarations
 
-//{{{event listeners
+//{{{window init
+
 window.onload = initWin();
 window.addEventListener("resize", initWin);
-
-//function evalKeyDown(evnt) {
-    //let keyPressed = evnt.keyCode;
-    ////console.log ("Pressed:", keyPressed);
-    //switch (keyPressed) {
-        //case 32 : evnt.preventDefault(); movePiece(); break;//key: spacebar
-        //case 49 : if(!event.shiftKey) selectPiece(1); 
-                  //else placePiece(1);
-                  //break; //key: 1
-        //case 50 : if(!event.shiftKey) selectPiece(2); 
-                  //else placePiece(2);
-                  //break; //key: 2
-        //case 51 : if(!event.shiftKey) selectPiece(3); 
-                  //else placePiece(3);
-                   //break; //key: 3
-        //case 52 : if(!event.shiftKey) selectPiece(4); 
-                  //else placePiece(4);
-                  //break; //key: 4
-        //case 53 : if(!event.shiftKey) selectPiece(5); 
-                  //else placePiece(5);
-                  //break; //key: 5
-        //case 54 : if(!event.shiftKey) selectPiece(6); 
-                  //else placePiece(6);
-                  //break; //key: 6
-        //case 48 : if(!event.shiftKey) selectPiece(7); 
-                  //else placePiece(7);
-                  //break; //key: 0
-        //case 80 : if(!event.shiftKey) resetPiece(pickedNum); 
-                   //else resetAll();
-                  //break;//key: p
-       //case 188 : if(!event.shiftKey) toggleHide(); 
-                  //else  hideAll(); 
-                  //break;//key: <comma>
-       //case 190 : playPrompt(); break;//key: <period>
-        //case 27 : parent.focus(); break; //key: Escape --This gives control back to reveal.js when in an iframe 
-        //default : return;
-    //} //switch (keyPressed)
-//} //evalKey(event)
-//function evalKeyUp(evnt) {
-    //let keyPressed = evnt.keyCode;
-    //if (keyPressed==32) leavePiece(); //key: spacebar
-//} //evalKey(event)
-//}}}event listeners
-
-//{{{window init
 
 function initWin() {
 document.getElementById('backgroundX').onload = function () { //wait for element before loading
@@ -104,6 +60,7 @@ window.addEventListener("contextmenu", movePiece, false); //capture keypress on 
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
     
     pickSound = new sound(sourceDir+"wav/pick.mp3");
+    cardSound = new sound(sourceDir+"wav/card.mp3");
     document.getElementById("dummy").focus(); //dummy select element that grabs the focus of the iframe
 
 }, 30);//setTimeOut (function()
@@ -118,6 +75,7 @@ function clickPiece(clicked_id) { //handler for mouse clicks
     let clickedNum = parseInt(extractIdNum);
     pickedNum = clickedNum;
     pickSound.start();
+    leavePiece();
     raisePiece();
 } //function clickPiece(clicked_id)
 function selectPiece(numPassed) { //handler for using the keyboard to select a piece
@@ -134,28 +92,35 @@ function placePiece(numPassed) {
 } //function selectPiece(pieceNum)
 function resetPiece() {
     pickSound.start();
-    //window.removeEventListener("mousemove",followMouse);
-    //insertCss (".pieceClass {transition: 100ms;}"); 
     pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[pickedNum-1].pickX)+'px';
     pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[pickedNum-1].pickY)+'px';
+    pieces[pickedNum-1].angle = 0;
+    pieces[pickedNum-1].style.transform = "rotate("+pieces[pickedNum-1].angle+"deg)";
 } //function selectPiece(pieceNum)
+function rotatePiece(rotation) {
+    cardSound.start();
+    pieces[pickedNum-1].angle+=rotation;
+    if (pieces[pickedNum-1].angle == 360) pieces[pickedNum-1].angle = 0;
+    if (pieces[pickedNum-1].angle == -90) pieces[pickedNum-1].angle = 270;
+    pieces[pickedNum-1].style.transform = "rotate("+pieces[pickedNum-1].angle+"deg)";
+} //function rotatePiece()
 function resetAll() {
     pickSound.start();
     for (let pInx=1; pInx<pieces.length+1; pInx++) {
         pieces[pInx-1].style.left = Math.round (scaleX*pieces[pInx-1].pickX)+'px';
         pieces[pInx-1].style.top = Math.round (scaleY*pieces[pInx-1].pickY)+'px';
+        pieces[pInx-1].angle = 0;
+        pieces[pInx-1].style.transform = "rotate("+pieces[pInx-1].angle+"deg)";
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
 } //function resetAll()
 function movePiece() {
     window.addEventListener("mousemove",followMouse);
-    window.addEventListener("contextmenu", leavePiece, false); //capture keypress on bubbling (false) phase
     insertCss (".pieceClass {transition: 0ms;}"); 
     //console.log("picked", pickedNum); 
 } //function leavePiece()
 function leavePiece() {
     pickSound.start();
     window.removeEventListener("mousemove",followMouse);
-    window.removeEventListener("contextmenu", leavePiece); 
     insertCss (".pieceClass {transition: 100ms;}"); 
 } //function leavePiece()
 function followMouse() { //activated by spacebar
