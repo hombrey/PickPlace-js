@@ -1,8 +1,8 @@
 #1/bin/bash
 #default source directory if not specified in the command line
 #SOURCEDIR=`echo $1`
-GENTYPE=`echo $1`
-SOURCEDIR=`echo "${GENTYPE%/*}"`
+TAILTYPE=`echo $1`
+SOURCEDIR=`echo "${TAILTYPE%/*}"`
 #truncate last character (i.e. "/")
 #SOURCEDIR=`echo "${SOURCEDIR%?}"`
 
@@ -25,5 +25,5 @@ echo "    <img class=\"fullPage\" id=\"backgroundX\" src=\"$SOURCEDIR/img/BG0.pn
 echo "    <select class=\"selectBox\" id=\"dummy\"><option></option></select>" >> x_Pick.html
 echo "    <script src=\"$SOURCEDIR/functions.js\"></script> " >> x_Pick.html
 
-cat "$GENTYPE" >> x_Pick.html
+cat "$TAILTYPE" >> x_Pick.html
 
