@@ -5,126 +5,38 @@ let scaleX, scaleY;
 let piece1;
 let pieces;
 let pickedNum=1;
-let pickSound;
+let pickSound,cardSound;
 let xAdj, yAdj;
+let assetDir,sourceDir;
 ;//}}}variable declarations
 
-//{{{event listeners
+//{{{window init
+
 window.onload = initWin();
 window.addEventListener("resize", initWin);
-window.addEventListener("keyup", evalKeyUp, false); //capture keypress on bubbling (false) phase
-window.addEventListener("keydown", evalKeyDown, false); //capture keypress on bubbling (false) phase
-
-function evalPress(evnt) {
-    let keyPressed = evnt.keyCode;
-    //console.log ("Pressed:", keyPressed);
-} //function evalPress
-
-function evalKeyDown(evnt) {
-    let keyPressed = evnt.keyCode;
-    switch (keyPressed) {
-        case 32 : movePiece(); break;//key: spacebar
-        case 49 : if(!event.shiftKey) selectPiece(1); 
-                  else placePiece(1);
-                  break; //key: 1
-        case 50 : if(!event.shiftKey) selectPiece(2); 
-                  else placePiece(2);
-                  break; //key: 2
-        case 51 : if(!event.shiftKey) selectPiece(3); 
-                  else placePiece(3);
-                   break; //key: 3
-        case 52 : if(!event.shiftKey) selectPiece(4); 
-                  else placePiece(4);
-                  break; //key: 4
-        case 53 : if(!event.shiftKey) selectPiece(5); 
-                  else placePiece(5);
-                  break; //key: 5
-        case 54 : if(!event.shiftKey) selectPiece(6); 
-                  else placePiece(6);
-                  break; //key: 6
-        case 80 : if(!event.shiftKey) resetPiece(pickedNum); 
-                   else resetAll();
-                  break;//key: p
-        case 188 :if(!event.shiftKey) toggleHide(); 
-                   else  hideAll(); 
-                  break;//key: <comma>
-        case 190 : playPrompt(); break;//key: <period>
-        default : return;
-    } //switch (keyPressed)
-} //evalKey(event)
-function evalKeyUp(evnt) {
-    let keyPressed = evnt.keyCode;
-    if (keyPressed==32) leavePiece(); //key: spacebar
-} //evalKey(event)
-//}}}event listeners
-
-//{{{initializations
-function placeLocations() {
-    pieces = [document.getElementById('piece1'),document.getElementById('piece2'),
-              document.getElementById('piece3'),document.getElementById('piece4'),
-              document.getElementById('piece5'),document.getElementById('piece6')
-    ]; //pieces =[]
-
-    pieces[1-1].pickX = 1026;
-    pieces[1-1].pickY = 426;
-    pieces[1-1].prompt = new sound("./src/PickPlace/wav/prompt1.mp3");
-
-    pieces[2-1].pickX = 30;
-    pieces[2-1].pickY = 441;
-    pieces[2-1].prompt = new sound("./src/PickPlace/wav/prompt2.mp3");
-
-    pieces[3-1].pickX = 10;
-    pieces[3-1].pickY = 31;
-    pieces[3-1].prompt = new sound("./src/PickPlace/wav/prompt3.mp3");
-
-    pieces[4-1].pickX = 736;
-    pieces[4-1].pickY = 482;
-    pieces[4-1].prompt = new sound("./src/PickPlace/wav/prompt4.mp3");
-
-    pieces[5-1].pickX = 365;
-    pieces[5-1].pickY = 475;
-    pieces[5-1].prompt = new sound("./src/PickPlace/wav/prompt5.mp3");
-
-    pieces[6-1].pickX = 1019;
-    pieces[6-1].pickY = 12;
-    pieces[6-1].prompt = new sound("./src/PickPlace/wav/prompt6.mp3");
-
-
-    pieces[1-1].placeX = 349;
-    pieces[1-1].placeY = 15;
-
-    pieces[2-1].placeX = 551;
-    pieces[2-1].placeY = 15;
-
-    pieces[3-1].placeX = 703;
-    pieces[3-1].placeY = 15;
-
-    pieces[4-1].placeX = 349;
-    pieces[4-1].placeY = 237;
-
-    pieces[5-1].placeX = 551;
-    pieces[5-1].placeY = 237;
-
-    pieces[6-1].placeX = 703;
-    pieces[6-1].placeY = 237;
-
-    pickSound = new sound("./src/PickPlace/wav/pick.mp3");
-} //function placePieces
-
 
 function initWin() {
 document.getElementById('backgroundX').onload = function () { //wait for element before loading
 setTimeout (function() { //set delay before calculating drawable parameters
+
+window.addEventListener("keyup", evalKeyUp, false); //capture keypress on bubbling (false) phase
+window.addEventListener("keydown", evalKeyDown, false); //capture keypress on bubbling (false) phase
+window.addEventListener("contextmenu", movePiece, false); //capture keypress on bubbling (false) phase
+    //Get project source
+    sourceDir = document.getElementById("srcdir").innerHTML;
+
+    //Get location of lesson assets
+    assetDir = document.getElementById("assetdir").innerHTML;
+    
     //Get a reference to the canvas
     bgX = document.getElementById('backgroundX');
     
-    //context_bgX = bgX.getContext('2d');
-
     scaleX = bgX.clientWidth/bgX.naturalWidth;
     scaleY = bgX.clientHeight/bgX.naturalHeight;
     //console.log ("scale: ("+scaleX+","+scaleY+")");
 
-    placeLocations();
+    placeLocations(); //define number of pieces and their unscaled positions here
+
     for (let pInx=1; pInx<pieces.length+1; pInx++) {
         //console.log ("pInx: ",pInx);
         pieces[pInx-1].Width = Math.round (scaleX*pieces[pInx-1].naturalWidth);
@@ -147,6 +59,9 @@ setTimeout (function() { //set delay before calculating drawable parameters
         //console.log ("#piece"+pInx+"{left: "+ pieces[pInx-1].X +"px; top: "+ pieces[pInx-1].Y +"px;}");
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
     
+    pickSound = new sound(sourceDir+"wav/pick.mp3");
+    cardSound = new sound(sourceDir+"wav/card.mp3");
+    document.getElementById("dummy").focus(); //dummy select element that grabs the focus of the iframe
 
 }, 30);//setTimeOut (function()
 };//document.getElementById(' ... wait for element before loading
@@ -160,6 +75,7 @@ function clickPiece(clicked_id) { //handler for mouse clicks
     let clickedNum = parseInt(extractIdNum);
     pickedNum = clickedNum;
     pickSound.start();
+    leavePiece();
     raisePiece();
 } //function clickPiece(clicked_id)
 function selectPiece(numPassed) { //handler for using the keyboard to select a piece
@@ -176,16 +92,25 @@ function placePiece(numPassed) {
 } //function selectPiece(pieceNum)
 function resetPiece() {
     pickSound.start();
-    //window.removeEventListener("mousemove",followMouse);
-    //insertCss (".pieceClass {transition: 100ms;}"); 
     pieces[pickedNum-1].style.left = Math.round (scaleX*pieces[pickedNum-1].pickX)+'px';
     pieces[pickedNum-1].style.top = Math.round (scaleY*pieces[pickedNum-1].pickY)+'px';
+    pieces[pickedNum-1].angle = 0;
+    pieces[pickedNum-1].style.transform = "rotate("+pieces[pickedNum-1].angle+"deg)";
 } //function selectPiece(pieceNum)
+function rotatePiece(rotation) {
+    cardSound.start();
+    pieces[pickedNum-1].angle+=rotation;
+    if (pieces[pickedNum-1].angle == 360) pieces[pickedNum-1].angle = 0;
+    if (pieces[pickedNum-1].angle == -90) pieces[pickedNum-1].angle = 270;
+    pieces[pickedNum-1].style.transform = "rotate("+pieces[pickedNum-1].angle+"deg)";
+} //function rotatePiece()
 function resetAll() {
     pickSound.start();
     for (let pInx=1; pInx<pieces.length+1; pInx++) {
         pieces[pInx-1].style.left = Math.round (scaleX*pieces[pInx-1].pickX)+'px';
         pieces[pInx-1].style.top = Math.round (scaleY*pieces[pInx-1].pickY)+'px';
+        pieces[pInx-1].angle = 0;
+        pieces[pInx-1].style.transform = "rotate("+pieces[pInx-1].angle+"deg)";
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
 } //function resetAll()
 function movePiece() {
@@ -198,9 +123,10 @@ function leavePiece() {
     window.removeEventListener("mousemove",followMouse);
     insertCss (".pieceClass {transition: 100ms;}"); 
 } //function leavePiece()
-function followMouse() {
+function followMouse() { //activated by spacebar
     let x = event.clientX+xAdj;
-    let y = event.clientY+yAdj;
+    //let y = event.clientY+yAdj;
+    let y = event.clientY; //removed Y offset so slow reveal can be done. using bottom edge
     pieces[pickedNum-1].style.left = x+'px';
     pieces[pickedNum-1].style.top = y+'px';
 } //function followMouse()
@@ -210,16 +136,16 @@ function playPrompt() {
 } //function playPrompt()
 function toggleHide() {
     if (pieces[pickedNum-1].show) {
-        pieces[pickedNum-1].src ="./src/PickPlace/img/"+pickedNum+"h.jpg";
+        pieces[pickedNum-1].src =assetDir+""+pickedNum+"h.jpg";
         pieces[pickedNum-1].show=false;
     } else {//if (pieces[pickedNum-1].show)
-        pieces[pickedNum-1].src ="./src/PickPlace/img/"+pickedNum+".png";
+        pieces[pickedNum-1].src =assetDir+""+pickedNum+".jpg";
         pieces[pickedNum-1].show=true;
     } // else //if (pieces[pickedNum-1 ...
 } //function toggleHide()
 function hideAll() {
     for (let pInx=1; pInx<pieces.length+1; pInx++) {
-        pieces[pInx-1].src ="./src/PickPlace/img/"+pInx+"h.jpg";
+        pieces[pInx-1].src =assetDir+""+pInx+"h.jpg";
         pieces[pInx-1].show = false;
     } //for (pInx=1; pInx=pieces.size+1; pInx+)
 } //function hideAll()
@@ -245,7 +171,7 @@ function dragElement(elmnt) {
     e.preventDefault();
     // get the mouse cursor position at startup:
     dragX = e.clientX+xAdj;
-    dragY = e.clientY+yAdj;
+    dragY = e.clientY+yAdj; 
     document.onmouseup = closeDragElement;
     // call a function whenever the cursor moves:
     document.onmousemove = elementDrag;
@@ -257,7 +183,6 @@ function dragElement(elmnt) {
     // calculate the new cursor position:
     dragX = e.clientX+xAdj;
     dragY = e.clientY+yAdj;
-      
     // set the element's new position:
     elmnt.style.top = ( dragY) + "px";
     elmnt.style.left = (  dragX) + "px";
