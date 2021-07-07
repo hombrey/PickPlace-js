@@ -16,8 +16,8 @@ window.onload = initWin();
 window.addEventListener("resize", initWin);
 
 function initWin() {
-document.getElementById('backgroundX').onload = function () { //wait for element before loading
-setTimeout (function() { //set delay before calculating drawable parameters
+document.getElementById('backgroundX').onload = async function () { //wait for element before loading
+await delay (200);
 
 window.addEventListener("keyup", evalKeyUp, false); //capture keypress on bubbling (false) phase
 window.addEventListener("keydown", evalKeyDown, false); //capture keypress on bubbling (false) phase
@@ -63,7 +63,6 @@ window.addEventListener("contextmenu", movePiece, false); //capture keypress on 
     cardSound = new sound(sourceDir+"wav/card.mp3");
     document.getElementById("dummy").focus(); //dummy select element that grabs the focus of the iframe
 
-}, 30);//setTimeOut (function()
 };//document.getElementById(' ... wait for element before loading
 } //function init()
 
@@ -267,4 +266,12 @@ function insertCss( code ) {
     document.getElementsByTagName("head")[0].appendChild( style );
 } //function insertCss( code)
 
+function delay(n) {  
+        n = n || 2000;
+        return new Promise(done => {
+                setTimeout(() => {
+                        done();
+                        }, n);
+            });
+}//function delay()
 //}}}helper functions

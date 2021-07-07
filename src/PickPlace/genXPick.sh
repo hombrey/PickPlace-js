@@ -22,7 +22,7 @@ echo "    <div id=\"srcdir\" style=\"display:none;\">$SOURCEDIR/</div>" >> x_Pic
 echo "    <div id=\"assetdir\" style=\"display:none\">./</div>" >> x_Pick.html
 echo "" >> x_Pick.html
 echo "    <img class=\"fullPage\" id=\"backgroundX\" src=\"$SOURCEDIR/img/BG0.png\">" >> x_Pick.html
-echo "    <select class=\"selectBox\" id=\"dummy\"><option></option></select>" >> x_Pick.html
+echo "    <select class=\"selectBox\" id=\"dummy\"><option>PickAndPlace</option></select>" >> x_Pick.html
 echo "    <script src=\"$SOURCEDIR/functions.js\"></script> " >> x_Pick.html
 
 cat "$TAILTYPE" >> x_Pick.html
