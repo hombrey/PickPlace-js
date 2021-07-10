@@ -1,10 +1,8 @@
 #1/bin/bash
-#default source directory if not specified in the command line
-#SOURCEDIR=`echo $1`
-TAILTYPE=`echo $1`
-SOURCEDIR=`echo "${TAILTYPE%/*}"`
+
+# extract the source directory from the command used to call this script
+SOURCEDIR=`echo "${0%/*}"`
 #truncate last character (i.e. "/")
-#SOURCEDIR=`echo "${SOURCEDIR%?}"`
 
 
 echo "<!DOCTYPE html>" > x_Pick.html
@@ -25,5 +23,25 @@ echo "    <img class=\"fullPage\" id=\"backgroundX\" src=\"$SOURCEDIR/img/BG0.pn
 echo "    <select class=\"selectBox\" id=\"dummy\"><option>PickAndPlace</option></select>" >> x_Pick.html
 echo "    <script src=\"$SOURCEDIR/functions.js\"></script> " >> x_Pick.html
 
-cat "$TAILTYPE" >> x_Pick.html
+ls $SOURCEDIR | sort -n > /tmp/list.txt
+filelist="/tmp/list.txt"
 
+echo $SOURCEDIR
+tailindex=1;
+tails=("")
+while IFS= read -r line
+do
+    EVAL=`echo " \"$line\" "`
+    if [[ $EVAL == *"html"* ]]; then
+          echo "        $tailindex $line" 
+          tails+=("$line")
+          ((tailindex++))
+    fi
+done < "$filelist"
+
+read -p "select Tail: " selectedTail
+
+#TAILTYPE=`echo $1`
+TAILTYPE=`echo $SOURCEDIR/${tails[selectedTail]}`
+cat "$TAILTYPE" >> x_Pick.html
+rm $filelist
