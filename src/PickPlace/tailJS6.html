@@ -13,7 +13,7 @@
             let keyPressed = evnt.keyCode;
             //console.log ("Pressed:", keyPressed);
             switch (keyPressed) {
-                case 32 : evnt.preventDefault(); movePiece(); break;//key: spacebar
+               case 190 : evnt.preventDefault(); movePiece(); break;//key: period
                 case 49 : if(!event.shiftKey) selectPiece(1); 
                         else placePiece(1);
                         break; //key: 1
@@ -40,14 +40,14 @@
             case 188 : if(!event.shiftKey) toggleHide(); 
                         else  hideAll(); 
                         break;//key: <comma>
-            case 190 : playPrompt(); break;//key: <period>
+            case  32 : evnt.preventDefault(); playPrompt(); break;//key: <spacebar>
             case  8 : parent.focus(); break; //key: Escape --This gives control back to reveal.js when in an iframe 
                 default : return;
             } //switch (keyPressed)
         } //evalKey(event)
         function evalKeyUp(evnt) {
             let keyPressed = evnt.keyCode;
-            if (keyPressed==32) leavePiece(); //key: spacebar
+            if (keyPressed==190) leavePiece(); //key: period
         } //evalKey(event)
         //}}}eval keys
 

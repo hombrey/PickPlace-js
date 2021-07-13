@@ -35,6 +35,8 @@ window.addEventListener("contextmenu", movePiece, false); //capture keypress on 
     scaleY = bgX.clientHeight/bgX.naturalHeight;
     //console.log ("scale: ("+scaleX+","+scaleY+")");
 
+await delay (200);
+
     placeLocations(); //define number of pieces and their unscaled positions here
 
     for (let pInx=1; pInx<pieces.length+1; pInx++) {
@@ -131,7 +133,7 @@ function followMouse() { //activated by spacebar
 } //function followMouse()
 
 function playPrompt() {
-    pieces[pickedNum-1].prompt.play();
+    pieces[pickedNum-1].prompt.start();
 } //function playPrompt()
 function toggleHide() {
     if (pieces[pickedNum-1].show) {
